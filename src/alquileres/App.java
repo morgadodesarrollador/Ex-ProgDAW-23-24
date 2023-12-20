@@ -80,4 +80,45 @@ public class App {
             System.out.println("eror");
         }
     }
+
+    public void loadAlquileres() {
+        Alquiler alq ;
+        String matricula = ""; String finicio=""; int dias ; int km;
+        System.out.println("Carga de Alquileres:");
+        try {
+            FileReader alquileresjson = new FileReader(this.rutaAlquiler);
+            JSONParser parser = new JSONParser();
+            Object objAlquileres = parser.parse(alquileresjson);
+            JSONArray AlquileresJA = (JSONArray) objAlquileres;
+
+            Vehiculo ve;
+            for (int i=0; i<AlquileresJA.size(); i++){
+                JSONObject AlquilerObj = (JSONObject) AlquileresJA.get(i);
+                matricula = (String) AlquilerObj.get("matricula");
+                finicio = (String) AlquilerObj.get("finicio");
+                km = Integer.parseInt((String) AlquilerObj.get("km"));
+                dias = Integer.parseInt((String) AlquilerObj.get("dias"));
+                //getVehiculo buscar el objVehiculo que tiene esa matricula (pk)
+                ve = this.getVehiculo(matricula);
+                Alquiler alquiler = new Alquiler(ve, finicio, km, 0);
+                this.LAlquiler.add(alquiler);
+                
+                ve.Alquileres.add(alquiler);
+            }
+
+        } catch (Exception e) {
+            System.out.println("eror");
+        }
+    }
+
+    Vehiculo getVehiculo(String mat){
+        Vehiculo ve = null ;
+        for (Vehiculo v: this.LVehiculos){
+            //System.out.println(v.matricula);
+            if (v.matricula.equals(mat)){
+                ve = v;
+            }
+        }
+        return ve;
+    }
 }
